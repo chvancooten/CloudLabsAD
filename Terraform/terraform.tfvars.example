@@ -1,0 +1,2 @@
+resource-group = "resourcegroupname"
+ip-whitelist   = ["1.2.3.4/32"] 
