@@ -4,7 +4,12 @@ variable "resource-group" {
 }
 
 variable "ip-whitelist" {
-  description = "A list of CIDRs that will be allowed to access the instances"
+  description = "A list of CIDRs that will be allowed to access the exposed services"
   type        = list(string)
   default     = [""]
+}
+
+variable "public-key" {
+    type = string
+    description = "The public key used to access the Debian machine via SSH"
 }

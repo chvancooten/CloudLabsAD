@@ -125,17 +125,15 @@ resource "azurerm_lb" "cloudlabs-lb" {
   }
 }
 
-# resource "azurerm_lb_backend_address_pool" "cloudlabs-lb-backend" {
-#   name            = "CloudLabs-lb-backend"
-#   loadbalancer_id = data.azurerm_lb.cloudlabs-lb.id
-# }
-
-# resource "azurerm_lb_backend_address_pool_address" "cloudlabs-lb-backend-ip" {
-#   name                    = "CloudLabs-lb-backend-ip"
-#   backend_address_pool_id = data.azurerm_lb_backend_address_pool.cloudlabs-lb-backend.id
-#   virtual_network_id      = data.azurerm_virtual_network.cloudlabs-vnet.id
-#   ip_address              = "10.0.0.250"
-# }
+resource "azurerm_lb_rule" "cloudlabs-lb-rule-http" {
+  resource_group_name            = azurerm_resource_group.cloudlabs-rg.name
+  loadbalancer_id                = azurerm_lb.cloudlabs-lb.id
+  name                           = "HTTPAccess"
+  protocol                       = "Tcp"
+  frontend_port                  = 80
+  backend_port                   = 80
+  frontend_ip_configuration_name = "PublicIPAddress"
+}
 
 resource "azurerm_lb_nat_rule" "cloudlabs-lb-nat-ssh" {
   resource_group_name            = azurerm_resource_group.cloudlabs-rg.name
@@ -147,8 +145,28 @@ resource "azurerm_lb_nat_rule" "cloudlabs-lb-nat-ssh" {
   frontend_ip_configuration_name = "CloudLabs-lb-ip-public"
 }
 
-# Create NAT gateway for outbound internet access?
-# https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-load-balancer-port-forwarding-portal
+resource "azurerm_lb_nat_rule" "cloudlabs-lb-nat-rdp" {
+  resource_group_name            = azurerm_resource_group.cloudlabs-rg.name
+  loadbalancer_id                = azurerm_lb.cloudlabs-lb.id
+  name                           = "RDPAccess"
+  protocol                       = "Tcp"
+  frontend_port                  = 3389
+  backend_port                   = 3389
+  frontend_ip_configuration_name = "CloudLabs-lb-ip-public"
+}
+
+# Create NAT gateway for outbound internet access
+resource "azurerm_nat_gateway" "cloudlabs-nat-gateway" {
+  name                    = "CloudLabs-nat-gateway"
+  location                = azurerm_resource_group.cloudlabs-rg.region
+  resource_group_name     = azurerm_resource_group.cloudlabs-rg.name
+}
+
+resource "azurerm_nat_gateway_public_ip_association" "cloudlabs-nat-gateway-ip" {
+  nat_gateway_id       = azurerm_nat_gateway.cloudlabs-nat-gateway.id
+  public_ip_address_id = azurerm_public_ip.cloudlabs-ip.id
+}
+
 
 #
 # WINDOWS SERVER 2016 - DC [10.13.37.10]
@@ -166,5 +184,54 @@ resource "azurerm_lb_nat_rule" "cloudlabs-lb-nat-ssh" {
 
 
 #
-# KALI LINUX ATTACKER BOX [10.13.37.200]
+# DEBIAN ATTACKER BOX [10.13.37.200]
 #
+
+# Network Interface
+resource "azurerm_network_interface" "cloudlabs-vm-debian-nic" {
+  name                = "CloudLabs-vm-debian-nic"
+  location            = azurerm_resource_group.cloudlabs-rg.region
+  resource_group_name = azurerm_resource_group.cloudlabs-rg.name
+
+  ip_configuration {
+    name                          = "CloudLabs-vm-debian-nic-config"
+    subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.13.37.200"
+  }
+}
+
+resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-debian-nic-nat" {
+  network_interface_id  = azurerm_network_interface.cloudlabs-vm-debian-nic.id
+  ip_configuration_name = "CloudLabs-vm-debian-nic-nat"
+  nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-ssh.id
+}
+
+# Virtual Machine
+resource "azurerm_linux_virtual_machine" "cloudlabs-vm-debian" {
+  name                = "CloudLabs-vm-debian"
+  resource_group_name = azurerm_resource_group.cloudlabs-rg.name
+  location            = azurerm_resource_group.cloudlabs-rg.region
+  size                = "Standard_B2s"
+  admin_username      = "hacker"
+  network_interface_ids = [
+    azurerm_network_interface.cloudlabs-vm-debian-nic.id,
+  ]
+
+  admin_ssh_key {
+    username   = "hacker"
+    public_key = var.public-key
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Debian"
+    offer     = "debian-11"
+    sku       = "11-gen2"
+    version   = "latest"
+  }
+}
