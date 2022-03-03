@@ -213,13 +213,13 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-debian" {
   resource_group_name = azurerm_resource_group.cloudlabs-rg.name
   location            = azurerm_resource_group.cloudlabs-rg.region
   size                = "Standard_B2s"
-  admin_username      = "hacker"
+  admin_username      = var.ssh-user
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-debian-nic.id,
   ]
 
   admin_ssh_key {
-    username   = "hacker"
+    username   = var.ssh-user
     public_key = var.public-key
   }
 

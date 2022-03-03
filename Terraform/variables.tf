@@ -1,5 +1,5 @@
 variable "resource-group" {
-    type = string
+    type        = string
     description = "The name of the sandbox resource group"
 }
 
@@ -9,7 +9,13 @@ variable "ip-whitelist" {
   default     = [""]
 }
 
+variable "ssh-user" {
+    type        = string
+    description = "The username used to access the Debian machine via SSH"
+    default     = "hacker"
+}
+
 variable "public-key" {
-    type = string
+    type        = string
     description = "The public key used to access the Debian machine via SSH"
 }

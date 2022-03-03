@@ -4,6 +4,13 @@ Provisioning scripts for an Active Directory lab environment. Designed to be dep
 
 ## Setup
 
+- Clone the repo to your Azure cloud shell. It conveniently has all you need (Ansible, Terraform, authenticated Azure command line).
+- Copy `terraform.tfvars.example` to `terraform.tfvars` in the `Terraform` directory, and configure the variables appropriately
+- In the same directory, run `terraform init`
+- When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip checks)
+- Wait for deployment to finish
+- Run `terraform output` to see your output variables
+
 ## Labs
 
 The idea is as follows:
