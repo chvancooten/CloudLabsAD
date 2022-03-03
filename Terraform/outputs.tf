@@ -9,7 +9,7 @@ output "public-ip" {
 }
 
 output "ip-whitelist" {
-    value = var.ip-whitelist
+    value = join(", ", var.ip-whitelist)
     description = "The IP address(es) that are allowed to connect to the various lab interfaces."
 }
 
