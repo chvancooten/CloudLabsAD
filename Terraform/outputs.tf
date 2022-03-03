@@ -1,5 +1,5 @@
 output "region" {
-  value = azurerm_resource_group.cloudlabs-rg.region
+  value = data.azurerm_resource_group.cloudlabs-rg.location
   description = "The region in which the resources are deployed. Based on the configured resource group."
 }
 

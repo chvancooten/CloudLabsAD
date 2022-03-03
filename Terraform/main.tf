@@ -111,6 +111,7 @@ resource "azurerm_public_ip" "cloudlabs-ip" {
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   allocation_method   = "Static"
   domain_name_label   = "cloudlabs"
+  sku                 = "Standard"
 }
 
 # Create another public IP address for outbound traffic
@@ -119,6 +120,7 @@ resource "azurerm_public_ip" "cloudlabs-ip-outbound" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 # Create a load balancer on the public IP
@@ -126,6 +128,7 @@ resource "azurerm_lb" "cloudlabs-lb" {
   name                = "CloudLabs-lb"
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
+  sku                 = "Standard"
 
   frontend_ip_configuration {
     name                 = "CloudLabs-lb-ip-public"
