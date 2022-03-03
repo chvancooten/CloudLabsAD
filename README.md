@@ -10,6 +10,7 @@ Provisioning scripts for an Active Directory lab environment. Designed to be dep
 - When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip checks)
 - Wait for deployment to finish
 - Run `terraform output` to see your output variables
+- When you're done with the labs, run `terraform destroy` to tear down the environment
 
 ## Labs
 
