@@ -26,4 +26,5 @@ output "ssh-user" {
 output "windows-password" {
     value = random_password.adminpass
     description = "The password used for Windows local admin accounts."
+    sensitive = true
 }
