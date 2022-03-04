@@ -18,8 +18,8 @@ output "ip-whitelist" {
     description = "The IP address(es) that are allowed to connect to the various lab interfaces."
 }
 
-output "ssh-user" {
-    value = var.ssh-user
+output "debian-user" {
+    value = var.debian-user
     description = "The SSH username used to connect to the Debian machine."
 }
 
