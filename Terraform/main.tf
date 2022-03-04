@@ -215,7 +215,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
-  admin_username      = "Administrator"
+  admin_username      = var.windows-user
   admin_password      = random_password.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-dc-nic.id,
@@ -261,7 +261,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
-  admin_username      = "Administrator"
+  admin_username      = var.windows-user
   admin_password      = random_password.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-winserv2019-nic.id,
@@ -306,7 +306,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows11" {
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
-  admin_username      = "Administrator"
+  admin_username      = var.windows-user
   admin_password      = random_password.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-windows11-nic.id,
