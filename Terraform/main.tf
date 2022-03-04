@@ -24,7 +24,7 @@ data "azurerm_resource_group" "cloudlabs-rg" {
 }
 
 # Generate random password for windows local admins
-resource "random_password" "adminpass" {
+resource "random_string" "adminpass" {
   length           = 16
   special          = true
   override_special = "_%@"
@@ -143,7 +143,7 @@ resource "azurerm_lb" "cloudlabs-lb" {
   }
 }
 
-resource "azurerm_lb_rule" "cloudlabs-lb-rule-http" {
+resource "azurerm_lb_nat_rule" "cloudlabs-lb-nat-http" {
   resource_group_name            = data.azurerm_resource_group.cloudlabs-rg.name
   loadbalancer_id                = azurerm_lb.cloudlabs-lb.id
   name                           = "HTTPAccess"
@@ -216,7 +216,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
   admin_username      = var.windows-user
-  admin_password      = random_password.adminpass.result
+  admin_password      = random_string.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-dc-nic.id,
   ]
@@ -254,6 +254,12 @@ resource "azurerm_network_interface" "cloudlabs-vm-winserv2019-nic" {
   }
 }
 
+resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-winserv2019-nic-nat" {
+  network_interface_id  = azurerm_network_interface.cloudlabs-vm-winserv2019-nic.id
+  ip_configuration_name = "CloudLabs-vm-winserv2019-nic-config"
+  nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-http.id
+}
+
 # Virtual Machine
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
   name                = "CloudLabs-vm-winserv2019"
@@ -262,7 +268,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
   admin_username      = var.windows-user
-  admin_password      = random_password.adminpass.result
+  admin_password      = random_string.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-winserv2019-nic.id,
   ]
@@ -299,6 +305,12 @@ resource "azurerm_network_interface" "cloudlabs-vm-windows11-nic" {
   }
 }
 
+resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-windows11-nic-nat" {
+  network_interface_id  = azurerm_network_interface.cloudlabs-vm-windows11-nic.id
+  ip_configuration_name = "CloudLabs-vm-windows11-nic-config"
+  nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-rdp.id
+}
+
 # Virtual Machine
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows11" {
   name                = "CloudLabs-vm-windows11"
@@ -307,7 +319,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows11" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
   admin_username      = var.windows-user
-  admin_password      = random_password.adminpass.result
+  admin_password      = random_string.adminpass.result
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-windows11-nic.id,
   ]
@@ -358,13 +370,13 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-debian" {
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B2s"
-  admin_username      = var.ssh-user
+  admin_username      = var.debian-user
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-debian-nic.id,
   ]
 
   admin_ssh_key {
-    username   = var.ssh-user
+    username   = var.debian-user
     public_key = var.public-key
   }
 

@@ -9,7 +9,13 @@ variable "ip-whitelist" {
   default     = [""]
 }
 
-variable "ssh-user" {
+variable "windows-user" {
+    type        = string
+    description = "The local administrative username for Windows machines. Password will be generated."
+    default     = "localadmin"
+}  
+
+variable "debian-user" {
     type        = string
     description = "The username used to access the Debian machine via SSH."
     default     = "hacker"
@@ -18,10 +24,4 @@ variable "ssh-user" {
 variable "public-key" {
     type        = string
     description = "The public key used to access the Debian machine via SSH."
-}
-
-variable "windows-user" {
-    type        = string
-    description = "The local administrative username for Windows machines. Password will be generated."
-    default     = "localadmin"
 }
