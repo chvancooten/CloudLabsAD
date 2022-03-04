@@ -256,7 +256,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-winserv2019-nic" {
 
 resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-winserv2019-nic-nat" {
   network_interface_id  = azurerm_network_interface.cloudlabs-vm-winserv2019-nic.id
-  ip_configuration_name = "CloudLabs-vm-winserv2019-nic-config"
+  ip_configuration_name = "CloudLabs-vm-debian-winserv2019-config"
   nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-http.id
 }
 
@@ -298,7 +298,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-windows11-nic" {
   resource_group_name  = data.azurerm_resource_group.cloudlabs-rg.name
 
   ip_configuration {
-    name                          = "CloudLabs-vm-debian-windows11-config"
+    name                          = "CloudLabs-vm-windows11-config"
     subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.13.37.150"
@@ -307,7 +307,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-windows11-nic" {
 
 resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-windows11-nic-nat" {
   network_interface_id  = azurerm_network_interface.cloudlabs-vm-windows11-nic.id
-  ip_configuration_name = "CloudLabs-vm-windows11-nic-config"
+  ip_configuration_name = "CloudLabs-vm-windows11-config"
   nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-rdp.id
 }
 

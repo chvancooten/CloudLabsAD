@@ -24,7 +24,6 @@ output "debian-user" {
 }
 
 output "windows-password" {
-    value = random_string.adminpass
+    value = random_string.adminpass.result
     description = "The password used for Windows local admin accounts."
-    sensitive = true
 }
