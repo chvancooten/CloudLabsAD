@@ -20,7 +20,7 @@ The idea is as follows:
 - Windows Server 2019
     - ADCS enabled
     - IIS with simple vuln application (webshell?)
-- Windows 10 Client
+- Windows 11 Client
     - Defender and logging best practices enabled (sysmon?)
     - Some EDR?
 - Debian attacker box
@@ -34,4 +34,4 @@ One public IP is exposed for the whole lab. The IP ranges defined in the `ip-whi
 
 - Port 22   -> Debian attacker box SSH
 - Port 80   -> Windows Server 2019 IIS web server
-- Port 3389 -> Windows 10 Client RDP
+- Port 3389 -> Windows 11 Client RDP

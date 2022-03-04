@@ -23,6 +23,13 @@ data "azurerm_resource_group" "cloudlabs-rg" {
   name = var.resource-group
 }
 
+# Generate random password for windows local admins
+resource "random_password" "adminpass" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
 
 #
 # NETWORKING
@@ -185,17 +192,139 @@ resource "azurerm_subnet_nat_gateway_association" "cloudlabs-nat-gateway-subnet"
 
 #
 # WINDOWS SERVER 2016 - DC [10.13.37.10]
-# 
+#
+
+# Network Interface
+resource "azurerm_network_interface" "cloudlabs-vm-dc-nic" {
+  name                 = "CloudLabs-vm-dc-nic"
+  location             = data.azurerm_resource_group.cloudlabs-rg.location
+  resource_group_name  = data.azurerm_resource_group.cloudlabs-rg.name
+
+  ip_configuration {
+    name                          = "CloudLabs-vm-debian-dc-config"
+    subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.13.37.10"
+  }
+}
+
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
+  name                = "CloudLabs-vm-dc"
+  computer_name       = "dc"
+  resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
+  location            = data.azurerm_resource_group.cloudlabs-rg.location
+  size                = "Standard_B4ms"
+  admin_username      = "Administrator"
+  admin_password      = random_password.adminpass
+  network_interface_ids = [
+    azurerm_network_interface.cloudlabs-vm-dc-nic.id,
+  ]
+
+  os_disk {
+    name                 = "CloudLabs-vm-dc-osdisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2016-Datacenter"
+    version   = "latest"
+  }
+}
 
 
 #
 # WINDOWS SERVER 2019 - CA and IIS [10.13.37.100]
 #
 
+# Network Interface
+resource "azurerm_network_interface" "cloudlabs-vm-winserv2019-nic" {
+  name                 = "CloudLabs-vm-winserv2019-nic"
+  location             = data.azurerm_resource_group.cloudlabs-rg.location
+  resource_group_name  = data.azurerm_resource_group.cloudlabs-rg.name
+
+  ip_configuration {
+    name                          = "CloudLabs-vm-debian-winserv2019-config"
+    subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.13.37.100"
+  }
+}
+
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
+  name                = "CloudLabs-vm-winserv2019"
+  computer_name       = "winserv2019"
+  resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
+  location            = data.azurerm_resource_group.cloudlabs-rg.location
+  size                = "Standard_B4ms"
+  admin_username      = "Administrator"
+  admin_password      = random_password.adminpass
+  network_interface_ids = [
+    azurerm_network_interface.cloudlabs-vm-winserv2019-nic.id,
+  ]
+
+  os_disk {
+    name                 = "CloudLabs-vm-winserv2019-osdisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+}
 
 #
-# WINDOWS 10 WORKSTATION [10.13.37.150]
-# 
+# WINDOWS 11 WORKSTATION [10.13.37.150]
+#
+
+# Network Interface
+resource "azurerm_network_interface" "cloudlabs-vm-windows11-nic" {
+  name                 = "CloudLabs-vm-windows11-nic"
+  location             = data.azurerm_resource_group.cloudlabs-rg.location
+  resource_group_name  = data.azurerm_resource_group.cloudlabs-rg.name
+
+  ip_configuration {
+    name                          = "CloudLabs-vm-debian-windows11-config"
+    subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.13.37.150"
+  }
+}
+
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows11" {
+  name                = "CloudLabs-vm-windows11"
+  computer_name       = "windows11"
+  resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
+  location            = data.azurerm_resource_group.cloudlabs-rg.location
+  size                = "Standard_B4ms"
+  admin_username      = "Administrator"
+  admin_password      = random_password.adminpass
+  network_interface_ids = [
+    azurerm_network_interface.cloudlabs-vm-windows11-nic.id,
+  ]
+
+  os_disk {
+    name                 = "CloudLabs-vm-windows11-osdisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsDesktop"
+    offer     = "windows11preview"
+    sku       = "win11-21h2-pro"
+    version   = "latest"
+  }
+}
 
 
 #
@@ -240,6 +369,7 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-debian" {
   }
 
   os_disk {
+    name                 = "CloudLabs-vm-debian-osdisk"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }

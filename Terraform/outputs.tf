@@ -4,8 +4,13 @@ output "region" {
 }
 
 output "public-ip" {
-  value = azurerm_public_ip.cloudlabs-ip.ip_address 
+  value = azurerm_public_ip.cloudlabs-ip.ip_address
   description = "The public IP address used to connect to the lab."
+}
+
+output "public-ip-outbound" {
+    value = azurerm_public_ip.cloudlabs-ip-outbound.ip_address
+    description = "The public IP address used by the lab machines to reach the internet."
 }
 
 output "ip-whitelist" {
@@ -13,12 +18,12 @@ output "ip-whitelist" {
     description = "The IP address(es) that are allowed to connect to the various lab interfaces."
 }
 
-output "public-ip-outbound" {
-    value = azurerm_public_ip.cloudlabs-ip-outbound.ip_address 
-    description = "The public IP address used by the lab machines to reach the internet."
+output "ssh-user" {
+    value = var.ssh-user
+    description = "The SSH username used to connect to the Debian machine."
 }
 
-output "ssh-user" {
-    value = var.ssh-user 
-    description = "The SSH username used to connect to the Debian machine."
+output "windows-password" {
+    value = random_password.adminpass
+    description = "The password used for Windows local admin accounts."
 }
