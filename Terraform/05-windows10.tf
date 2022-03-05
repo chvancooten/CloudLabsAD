@@ -22,13 +22,14 @@ resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-windows1
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
   name                = "CloudLabs-vm-windows10"
   computer_name       = "windows10"
-  resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
-  location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B4ms"
   provision_vm_agent  = true
   enable_automatic_updates = true
+  resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
+  location            = data.azurerm_resource_group.cloudlabs-rg.location
   admin_username      = var.windows-user
   admin_password      = random_string.adminpass.result
+  custom_data         = local.custom_data_content
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-windows10-nic.id,
   ]

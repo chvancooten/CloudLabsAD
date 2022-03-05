@@ -15,6 +15,11 @@ provider "azurerm" {
   features {}
 }
 
+# Specify where the custom data file is for WinRM initialization
+locals {
+    custom_data_content  = file("${path.module}/files/ConfigureRemotingForAnsible.ps1")
+}
+
 # Generate random password for windows local admins
 resource "random_string" "adminpass" {
   length           = 16
