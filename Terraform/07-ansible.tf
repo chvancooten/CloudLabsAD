@@ -49,7 +49,7 @@ resource "null_resource" "ansible-provisioning" {
   # Kick off ansible
   provisioner "remote-exec" {
     inline = [
-      "sudo apt -qq update && sudo apt -qq install -y git ansible",
+      "sudo apt -qq update >/dev/null && sudo apt -qq install -y git ansible >/dev/null",
       "cd /dev/shm/Ansible",
       "ansible-playbook -v cloudlabs.yml"
     ]

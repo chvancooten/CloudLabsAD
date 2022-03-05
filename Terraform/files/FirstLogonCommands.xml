@@ -10,12 +10,12 @@
             <Order>11</Order>
         </SynchronousCommand>
     <SynchronousCommand>
-            <CommandLine>cmd /c "copy C:\AzureData\CustomData.bin C:\terraform\winrm.ps1"</CommandLine>
+            <CommandLine>cmd /c "copy C:\AzureData\CustomData.bin C:\terraform\ConfigureRemotingForAnsible.ps1"</CommandLine>
             <Description>Move the CustomData file to the working directory</Description>
             <Order>12</Order>
         </SynchronousCommand>
     <SynchronousCommand>
-            <CommandLine>powershell.exe -sta -ExecutionPolicy Unrestricted -file C:\terraform\winrm.ps1</CommandLine>
+            <CommandLine>powershell.exe -sta -ExecutionPolicy Unrestricted -file C:\terraform\ConfigureRemotingForAnsible.ps1</CommandLine>
             <Description>Move the CustomData file to the working directory</Description>
             <Order>13</Order>
         </SynchronousCommand>
