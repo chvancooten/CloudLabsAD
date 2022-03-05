@@ -15,17 +15,6 @@ provider "azurerm" {
   features {}
 }
 
-# Add the specified SSH key to SSH-agent
-resource "null_resource" "ssh-add" {
-  provisioner "local-exec" {
-    # Bootstrap script called with private_ip of each node in the cluster
-    inline = [
-      "eval `ssh-agent`",
-      "ssh-add ${var.private-key-path}"
-    ]
-  }
-}
-
 # Generate random password for windows local admins
 resource "random_string" "adminpass" {
   length           = 16

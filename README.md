@@ -4,12 +4,16 @@ Provisioning scripts for an Active Directory lab environment. Designed to be dep
 
 ## Setup
 
+### Deployment
+
 - Clone the repo to your Azure cloud shell. It conveniently has all you need (Ansible, Terraform, authenticated Azure command line).
 - Copy `terraform.tfvars.example` to `terraform.tfvars` in the `Terraform` directory, and configure the variables appropriately
+- Add the private key for the specified `public-key` to SSH-agent (``eval `ssh-agent`; ssh-add ~/.ssh/id_rsa``)
 - In the same directory, run `terraform init`
-- When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip checks)
-- Wait for deployment to finish
-- Run `terraform output` to see your output variables
+- When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip the approval check)
+
+### Removal
+
 - When you're done with the labs, run `terraform destroy` to tear down the environment
 
 ## Labs
