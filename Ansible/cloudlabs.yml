@@ -1,18 +1,22 @@
 ---
-- hosts: dc
+# Run common tasks on all machines first
+- hosts: all
   roles:
-    #- dc
     - common
-  tags: dc
 
-- hosts: winserv2019
-  roles:
-    #- winserv2019
-    - common
-  tags: winserv2019
+### NOT YET IMPLEMENTED
+# # Then configure the DC to prepare the domain
+# - hosts: dc
+#   roles:
+#     - dc
 
-- hosts: win11
-  roles:
-    #- win11
-    - common
-  tags: win11
+# # Finally, configure client machines in parallel
+# - hosts: all
+#   strategy: free
+#   tasks:
+#     - include_role:
+#       name: winserv2019
+#       when: winserv2019 in group_names
+#     - include_role: 
+#       name: win10
+#       when: win10 in group_names

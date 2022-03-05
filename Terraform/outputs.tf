@@ -23,6 +23,11 @@ output "debian-user" {
     description = "The SSH username used to connect to the Debian machine."
 }
 
+output "windows-user" {
+    value = var.windows-user
+    description = "The username used to connect to the Windows machine."
+}
+
 output "windows-password" {
     value = random_string.adminpass.result
     description = "The password used for Windows local admin accounts."

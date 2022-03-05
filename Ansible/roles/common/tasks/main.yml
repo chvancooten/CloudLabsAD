@@ -5,7 +5,6 @@
     name:
     - NotepadPlusPlus
     - GoogleChrome
-    - WinRar
     - wireshark
     - winpcap
     state: present
