@@ -1,9 +1,10 @@
 # Prepare the group variable template with the right username and password
 data "template_file" "ansible-group-vars" {
   template = "${file("../Ansible/group_vars/all.tmpl")}"
+
   depends_on = [
     var.windows-user,
-    random_string.adminpass.result
+    random_string.adminpass
   ]
   
   vars = {
@@ -26,11 +27,17 @@ resource "null_resource" "ansible-group-vars-creation" {
 # Provision the lab using Ansible from the Debian machine
 resource "null_resource" "ansible-provisioning" {
 
+  triggers = {
+    dc_id = azurerm_windows_virtual_machine.cloudlabs-vm-dc.id
+    winserv2019_id = azurerm_windows_virtual_machine.cloudlabs-vm-winserv2019.id
+    windows10_id = azurerm_windows_virtual_machine.cloudlabs-vm-windows10.id
+  }
+
   connection {
-    type        = "ssh"
-    host        = azurerm_public_ip.cloudlabs-ip.ip_address
-    user        = var.debian-user
-    private_key = file(var.private-key-path)
+    type  = "ssh"
+    host  = azurerm_public_ip.cloudlabs-ip.ip_address
+    user  = var.debian-user
+    agent = true
   }
 
   # Copy Ansible folder to debian machine for provisioning
