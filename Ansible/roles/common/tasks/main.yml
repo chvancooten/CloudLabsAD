@@ -1,0 +1,12 @@
+---
+
+- name: Install Utilities 
+  win_chocolatey:
+    name:
+    - NotepadPlusPlus
+    - GoogleChrome
+    - WinRar
+    - wireshark
+    - winpcap
+    state: present
+    ignore_checksums: true

@@ -1,0 +1,18 @@
+---
+- hosts: dc
+  roles:
+    #- dc
+    - common
+  tags: dc
+
+- hosts: winserv2019
+  roles:
+    #- winserv2019
+    - common
+  tags: winserv2019
+
+- hosts: win11
+  roles:
+    #- win11
+    - common
+  tags: win11

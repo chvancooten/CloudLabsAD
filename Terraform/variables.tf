@@ -25,3 +25,9 @@ variable "public-key" {
     type        = string
     description = "The public key used to access the Debian machine via SSH."
 }
+
+variable "private-key-path" {
+    type        = string
+    description = "The local path to the private key file for the Debian machine."
+    default     = "~/.ssh/id_rsa"
+}
