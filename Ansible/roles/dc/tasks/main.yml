@@ -32,11 +32,11 @@
     parameters:
       NonInteractive: true
       SkipLapsInstall: true
-  creates: C:\Windows\ADPopulated
+    creates: C:\Windows\AD.populated
 
 - name: Touch file to track AD state
-  ansible.windows.win_file:
-    path: C:\Windows\ADPopulated
+  win_file:
+    path: C:\Windows\AD.populated
     state: touch
 
 - name: Clean up BadBlood files
