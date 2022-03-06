@@ -1,11 +1,35 @@
 ---
 
 - name: Create new AD domain
-  ansible.windows.win_domain:
+  win_domain:
     dns_domain_name: "{{ domain_name }}"
     safe_mode_password: "{{ ansible_password }}"
   register: domain_install
 
 - name: Reboot after promotion
-  ansible.windows.win_reboot:
+  win_reboot:
   when: domain_install.reboot_required
+
+- name: Download BadBlood
+  win_get_url:
+    url: https://github.com/chvancooten/BadBlood/archive/refs/heads/master.zip
+    dest: C:\Users\Public\Downloads\BadBlood-master.zip
+
+- name: Extract BadBlood archive
+  win_unzip:
+    src: C:\Users\Public\Downloads\BadBlood-master.zip
+    dest: C:\Users\Public\Downloads
+    creates: C:\Users\Public\Downloads\BadBlood-master
+    delete_archive: yes
+
+- name: Run BadBlood to populate AD insecurely
+  win_powershell:
+    script: C:\Users\Public\Downloads\BadBlood-master\Invoke-BadBlood.ps1
+    parameters:
+      NonInteractive: true
+      SkipLapsInstall: true
+
+- name: Clean up BadBlood files
+  win_file:
+    path: C:\Users\Public\Downloads\BadBlood-master
+    state: absent

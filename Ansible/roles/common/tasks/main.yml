@@ -5,21 +5,10 @@
     src: files/DesktopWallpaper.jpg
     dest: C:\Users\Public\Pictures\DesktopWallpaper.jpg
 
-- name: Change desktop wallpaper
-  win_regedit:
-    path: '{{ item.path }}'
-    name: '{{ item.name }}'
-    data: '{{ item.data }}'
-    type: '{{ item.type }}'
-  with_items:
-  - path: HKCU:\Control Panel\Desktop
-    name: Wallpaper
-    data: 'C:\Users\Public\Pictures\DesktopWallpaper.jpg'
-    type: string
-  - path: HKCU:\Control Panel\Desktop
-    name: WallpaperStyle
-    data: 4 # Fill
-    type: string
+- name: Copy bginfo configuration
+  win_copy:
+    src: files/bginfo.bgi
+    dest: C:\Users\Public\bginfo.bgi
 
 - name: Install utilities 
   win_chocolatey:
@@ -30,8 +19,8 @@
     state: present
     ignore_checksums: true
 
-- name: Start bginfo after login
+- name: Configure bginfo as autorun
   win_regedit:
     path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
     name: bginfo
-    data: 'C:\ProgramData\chocolatey\bin\bginfo.exe /silent /timer:0 /nolicprompt'
+    data: 'C:\ProgramData\chocolatey\bin\bginfo.exe c:\users\public\bginfo.bgi /silent /timer:0 /nolicprompt'
