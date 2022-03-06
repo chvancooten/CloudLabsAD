@@ -21,8 +21,8 @@ Provisioning scripts for an Active Directory lab environment. Designed to be dep
 The idea is as follows:
 
 - Windows Server 2016 DC
-- Windows Server 2019
     - ADCS enabled
+- Windows Server 2019
     - IIS with simple vuln application (webshell?)
 - Windows 10 Client
     - Defender and logging best practices enabled (sysmon?)

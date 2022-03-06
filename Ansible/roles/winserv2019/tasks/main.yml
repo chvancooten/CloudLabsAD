@@ -1,5 +1,6 @@
 ---
 
+# Join domain
 - name: Configure DNS settings
   win_dns_client:
       adapter_names: Ethernet
@@ -19,3 +20,31 @@
 - name: Reboot after joining domain
   win_reboot:
   when: domain_state.reboot_required
+
+# Install vulnerable IIS web server
+- name: Install IIS Web-Server with sub features and management tools
+  win_feature:
+    name: Web-Server
+    state: present
+    include_sub_features: yes
+    include_management_tools: yes
+  register: win_feature
+
+- name: Copy webserver files
+  win_copy:
+    src: files/webserver/
+    dest: C:\inetpub\wwwroot
+
+- name: Give IIS_IUSRS control of webserver files
+  win_acl:
+    path: C:\inetpub\wwwroot
+    user: IIS_IUSRS
+    rights: FullControl
+    type: allow
+    state: present
+    inherit: ContainerInherit, ObjectInherit
+    propagation: 'None'
+
+- name: Reboot if installing Web-Server feature requires it
+  win_reboot:
+  when: win_feature.reboot_required

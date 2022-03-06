@@ -1,15 +1,19 @@
 ---
 
-- name: Create new AD domain
-  win_domain:
-    dns_domain_name: "{{ domain_name }}"
-    safe_mode_password: "{{ ansible_password }}"
-  register: domain_install
+# Install ADCS
+- name: Install ADCS with sub features and management tools
+  win_feature:
+    name: Active Directory Certificate Services
+    state: present
+    include_sub_features: yes
+    include_management_tools: yes
+  register: win_feature
 
-- name: Reboot after promotion
+- name: Reboot if installing Web-Server feature requires it
   win_reboot:
-  when: domain_install.reboot_required
+  when: win_feature.reboot_required
 
+# Populate AD and add vulnerabilities using BadBlood
 - name: Download BadBlood
   win_get_url:
     url: https://github.com/chvancooten/BadBlood/archive/refs/heads/master.zip
@@ -23,7 +27,7 @@
     delete_archive: yes
 
 - name: Run BadBlood to populate AD insecurely
-  win_powershell:
+  ansible.windows.win_powershell:
     script: C:\Users\Public\Downloads\BadBlood-master\Invoke-BadBlood.ps1
     parameters:
       NonInteractive: true
