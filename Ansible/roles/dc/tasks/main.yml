@@ -1,5 +1,18 @@
 ---
 
+# Install ADCS
+- name: Install ADCS
+  win_feature:
+    name: AD-Certificate
+    state: present
+    include_sub_features: yes
+    include_management_tools: yes
+  register: win_feature
+
+- name: Reboot after ADCS installation
+  win_reboot:
+  when: win_feature.reboot_required
+
 # Populate AD and add vulnerabilities using BadBlood
 - name: Download BadBlood
   win_get_url:

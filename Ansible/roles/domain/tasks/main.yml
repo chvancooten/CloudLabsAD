@@ -7,15 +7,6 @@
     safe_mode_password: "{{ ansible_password }}"
   register: domain_install
 
-# Install ADCS
-- name: Install ADCS with sub features and management tools
-  win_feature:
-    name: AD-Certificate
-    state: present
-    include_sub_features: yes
-    include_management_tools: yes
-  register: win_feature
-
-- name: Reboot after AD and ADCS installation
+- name: Reboot after AD installation
   win_reboot:
-  when: win_feature.reboot_required or domain_install.reboot_required
+  when: domain_install.reboot_required

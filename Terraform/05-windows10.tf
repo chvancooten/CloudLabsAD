@@ -27,6 +27,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
   enable_automatic_updates = true
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
+  timezone            = var.timezone
   admin_username      = var.windows-user
   admin_password      = random_string.adminpass.result
   custom_data         = local.custom_data_content

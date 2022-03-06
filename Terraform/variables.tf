@@ -3,10 +3,22 @@ variable "resource-group" {
     description = "The name of the sandbox resource group."
 }
 
+variable "timezone" {
+    type        = string
+    description = "The timezone of the lab VMs."
+    default     = "W. Europe Standard Time"
+}
+
 variable "ip-whitelist" {
   description = "A list of CIDRs that will be allowed to access the exposed services."
   type        = list(string)
   default     = [""]
+}
+
+variable "domain-name-label" {
+  description = "The DNS name of the Azure public IP."
+  type        = string
+  default     = "cloudlabs"
 }
 
 variable "domain-dns-name" {

@@ -85,7 +85,7 @@ resource "azurerm_public_ip" "cloudlabs-ip" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   allocation_method   = "Static"
-  domain_name_label   = "cloudlabs"
+  domain_name_label   = var.domain-name-label
   sku                 = "Standard"
 }
 
