@@ -29,8 +29,9 @@ resource "null_resource" "ansible-group-vars-creation" {
 # Provision the lab using Ansible from the Debian machine
 resource "null_resource" "ansible-provisioning" {
 
-  # All VMs have to be up before provisioning can be initiated
+  # All VMs have to be up before provisioning can be initiated, and we always trigger
   triggers = {
+    always_run = "${timestamp()}"
     dc_id = azurerm_windows_virtual_machine.cloudlabs-vm-dc.id
     winserv2019_id = azurerm_windows_virtual_machine.cloudlabs-vm-winserv2019.id
     windows10_id = azurerm_windows_virtual_machine.cloudlabs-vm-windows10.id
