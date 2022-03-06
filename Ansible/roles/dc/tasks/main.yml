@@ -1,18 +1,5 @@
 ---
 
-# Install ADCS
-- name: Install ADCS with sub features and management tools
-  win_feature:
-    name: Active Directory Certificate Services
-    state: present
-    include_sub_features: yes
-    include_management_tools: yes
-  register: win_feature
-
-- name: Reboot if installing Web-Server feature requires it
-  win_reboot:
-  when: win_feature.reboot_required
-
 # Populate AD and add vulnerabilities using BadBlood
 - name: Download BadBlood
   win_get_url:

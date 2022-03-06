@@ -24,3 +24,45 @@
     path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
     name: bginfo
     data: 'C:\ProgramData\chocolatey\bin\bginfo.exe c:\users\public\bginfo.bgi /silent /timer:0 /nolicprompt'
+
+# Clean up Windows stuff from the taskbar
+- name: Ensure 'Search' unpinned from Taskbar.
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: SearchboxTaskbarMode
+    data: 0
+    type: dword
+
+- name: Ensure 'News and Interests' unpinned from Taskbar.
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds
+    name: EnableFeeds
+    data: 0
+    type: dword
+    state: present
+
+- name: Ensure 'People' unpinned from Taskbar.
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People
+    name: PeopleBand
+    data: 0
+    type: dword
+
+- name: Ensure 'Edge', 'Store' other built-in shortcuts unpinned from Taskbar.
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband
+    name: Favorites
+    state: absent
+
+- name: Hide Task View, Chat and Cortana, always show file extensions
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: "{{ item }}"
+    data: 0
+    type: dword
+  loop:
+    - ShowCortanaButton
+    - ShowTaskViewButton
+    - TaskbarDa
+    - TaskbarMn
+    - HideFileExt

@@ -35,6 +35,14 @@
     src: files/webserver/
     dest: C:\inetpub\wwwroot
 
+- name: Remove default webserver files
+  win_file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - C:\inetpub\wwwroot\iisstart.html
+    - C:\inetpub\wwwroot\iisstart.png
+
 - name: Give IIS_IUSRS control of webserver files
   win_acl:
     path: C:\inetpub\wwwroot

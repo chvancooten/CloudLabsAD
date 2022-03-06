@@ -8,6 +8,11 @@ output "public-ip" {
   description = "The public IP address used to connect to the lab."
 }
 
+output "public-ip-dns" {
+  value = azurerm_public_ip.cloudlabs-ip.fqdn
+  description = "The public DNS name used to connect to the lab."
+}
+
 output "public-ip-outbound" {
     value = azurerm_public_ip.cloudlabs-ip-outbound.ip_address
     description = "The public IP address used by the lab machines to reach the internet."
