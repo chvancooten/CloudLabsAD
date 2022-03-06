@@ -1,13 +1,11 @@
 ---
 
-- name: Promote server to Domain Controller
-  ansible.windows.win_domain_controller:
+- name: Create new AD domain in a new forest on DC
+  ansible.windows.win_domain:
     dns_domain_name: "{{ domain_name }}"
-    domain_admin_user: "domainadmin@{{ domain_name }}"
-    domain_admin_password: "{{ ansible_password }}"
     safe_mode_password: "{{ ansible_password }}"
-    state: domain_controller
+  register: domain_install
 
 - name: Reboot after promotion
   ansible.windows.win_reboot:
-  when: dc_promotion.reboot_required
+  when: domain_install.reboot_required
