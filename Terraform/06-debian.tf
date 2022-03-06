@@ -21,7 +21,7 @@ resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-debian-n
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "cloudlabs-vm-debian" {
   name                = "CloudLabs-vm-debian"
-  computer_name       = "hackbox"
+  computer_name       = var.debian-hostname
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B2s"

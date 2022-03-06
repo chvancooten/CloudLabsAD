@@ -21,7 +21,7 @@ resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-windows1
 # Virtual Machine
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
   name                = "CloudLabs-vm-windows10"
-  computer_name       = "windows10"
+  computer_name       = var.win10-hostname
   size                = "Standard_B4ms"
   provision_vm_agent  = true
   enable_automatic_updates = true

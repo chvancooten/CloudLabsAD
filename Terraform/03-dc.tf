@@ -15,7 +15,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-dc-nic" {
 # Virtual Machine
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
   name                     = "CloudLabs-vm-dc"
-  computer_name            = "dc"
+  computer_name            = var.dc-hostname
   size                     = "Standard_B4ms"
   provision_vm_agent       = true
   enable_automatic_updates = true

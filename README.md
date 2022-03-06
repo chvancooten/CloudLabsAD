@@ -14,6 +14,8 @@ The lab is provisioned automatically using Terraform and Ansible. First, Terrafo
 - In the same directory, run `terraform init`
 - When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip the approval check)
 
+Once deployment and provisioning have finished, the output variables (public IP / DNS name, administrative password, etc.) will be displayed. You are now ready to connect to the labs!
+
 ### Post-Deployment Configuration
 
 - If you want to use ADCS, you have to RDP to the DC and follow the post-deployment configuration steps to activate ADCS and the ADCS web enrolment endpoint. Make sure to enable the 'Certification Authority', 'Certification Authority Web Enrollment', and 'Certificate Enrollment Web Service' role services (you can leave the default settings otherwise).
