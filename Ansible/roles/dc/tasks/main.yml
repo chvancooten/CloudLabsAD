@@ -1,0 +1,13 @@
+---
+
+- name: Promote server to Domain Controller
+  ansible.windows.win_domain_controller:
+    dns_domain_name: "{{ domain_name }}"
+    domain_admin_user: "domainadmin@{{ domain_name }}"
+    domain_admin_password: "{{ ansible_password }}"
+    safe_mode_password: "{{ ansible_password }}"
+    state: domain_controller
+
+- name: Reboot after promotion
+  ansible.windows.win_reboot:
+  when: dc_promotion.reboot_required

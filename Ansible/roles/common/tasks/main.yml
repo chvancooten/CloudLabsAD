@@ -1,6 +1,27 @@
 ---
 
-- name: Install Utilities 
+- name: Copy desktop wallpaper
+  win_copy:
+    src: files/DesktopWallpaper.jpg
+    dest: C:\Users\Public\Pictures\DesktopWallpaper.jpg
+
+- name: Change desktop wallpaper
+  win_regedit:
+    path: '{{ item.path }}'
+    name: '{{ item.name }}'
+    data: '{{ item.data }}'
+    type: '{{ item.type }}'
+  with_items:
+  - path: HKCU:\Control Panel\Desktop
+    name: Wallpaper
+    data: 'C:\Users\Public\Pictures\DesktopWallpaper.jpg'
+    type: string
+  - path: HKCU:\Control Panel\Desktop
+    name: WallpaperStyle
+    data: 4 # Fill
+    type: string
+
+- name: Install utilities 
   win_chocolatey:
     name:
     - NotepadPlusPlus

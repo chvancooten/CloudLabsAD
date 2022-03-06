@@ -4,19 +4,19 @@
   roles:
     - common
 
-### NOT YET IMPLEMENTED
-# # Then configure the DC to prepare the domain
-# - hosts: dc
-#   roles:
-#     - dc
+## NOT YET IMPLEMENTED
+# Then configure the DC to prepare the domain
+- hosts: dc
+  roles:
+    - dc
 
-# # Finally, configure client machines in parallel
-# - hosts: all
-#   strategy: free
-#   tasks:
-#     - include_role:
-#       name: winserv2019
-#       when: winserv2019 in group_names
-#     - include_role: 
-#       name: win10
-#       when: win10 in group_names
+# Finally, configure client machines in parallel
+- hosts: all
+  strategy: free
+  tasks:
+    - include_role:
+      name: winserv2019
+      when: winserv2019 in group_names
+    - include_role: 
+      name: win10
+      when: win10 in group_names

@@ -4,12 +4,14 @@ data "template_file" "ansible-group-vars" {
 
   depends_on = [
     var.windows-user,
+    var.domain-dns-name,
     random_string.adminpass
   ]
   
   vars = {
-    username = var.windows-user
-    password = random_string.adminpass.result
+    username    = var.windows-user
+    password    = random_string.adminpass.result
+    domain_name = var.domain-dns-name
   }
 }
 

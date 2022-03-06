@@ -9,6 +9,12 @@ variable "ip-whitelist" {
   default     = [""]
 }
 
+variable "domain-dns-name" {
+  description = "The DNS name of the Active Directory domain."
+  type        = string
+  default     = "cloud.labs"
+}
+
 variable "windows-user" {
     type        = string
     description = "The local administrative username for Windows machines. Password will be generated."
