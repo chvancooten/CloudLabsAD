@@ -18,7 +18,7 @@ variable "domain-dns-name" {
 variable "windows-user" {
     type        = string
     description = "The local administrative username for Windows machines. Password will be generated."
-    default     = "admin"
+    default     = "labadmin"
 }  
 
 variable "debian-user" {

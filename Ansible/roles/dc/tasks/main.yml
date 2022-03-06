@@ -1,6 +1,6 @@
 ---
 
-- name: Create new AD domain in a new forest on DC
+- name: Create new AD domain
   ansible.windows.win_domain:
     dns_domain_name: "{{ domain_name }}"
     safe_mode_password: "{{ ansible_password }}"
