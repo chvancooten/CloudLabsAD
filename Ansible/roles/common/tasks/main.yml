@@ -26,7 +26,12 @@
     name:
     - NotepadPlusPlus
     - GoogleChrome
-    - wireshark
-    - winpcap
+    - bginfo
     state: present
     ignore_checksums: true
+
+- name: Start bginfo after login
+  win_regedit:
+    path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
+    name: bginfo
+    data: 'C:\ProgramData\chocolatey\bin\bginfo.exe /silent /timer:0 /nolicprompt'
