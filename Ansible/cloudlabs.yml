@@ -1,6 +1,6 @@
 ---
 # Run common tasks on all machines in parallel
-- hosts: all
+- hosts: windows
   roles:
     - common
 
@@ -10,7 +10,7 @@
     - domain
 
 # Domain-join clients and run post-domain configuration in parallel
-- hosts: all
+- hosts: windows
   strategy: free
   tasks:
     - include_role:

@@ -8,7 +8,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-elastic-nic" {
     name                          = "CloudLabs-vm-elastic-nic-config"
     subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = "10.13.37.200"
+    private_ip_address            = "10.13.37.50"
   }
 }
 

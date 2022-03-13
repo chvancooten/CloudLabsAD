@@ -1,6 +1,6 @@
 # Prepare the group variable template with the right username and password
-data "template_file" "ansible-group-vars" {
-  template = "${file("../Ansible/group_vars/all.tmpl")}"
+data "template_file" "ansible-groupvars-windows" {
+  template = "${file("../Ansible/group_vars/windows.tmpl")}"
 
   depends_on = [
     var.windows-user,
@@ -15,13 +15,38 @@ data "template_file" "ansible-group-vars" {
   }
 }
 
-resource "null_resource" "ansible-group-vars-creation" {
+resource "null_resource" "ansible-groupvars-windows-creation" {
   triggers = {
-    template_rendered = "${data.template_file.ansible-group-vars.rendered}"
+    template_rendered = "${data.template_file.ansible-groupvars-windows.rendered}"
   }
   
   provisioner "local-exec" {
-    command = "echo '${data.template_file.ansible-group-vars.rendered}' > ../Ansible/group_vars/all.yml"
+    command = "echo '${data.template_file.ansible-groupvars-windows.rendered}' > ../Ansible/group_vars/windows.yml"
+  }
+}
+
+# Prepare the group variable template with the right username and password
+data "template_file" "ansible-groupvars-linux" {
+  template = "${file("../Ansible/group_vars/linux.tmpl")}"
+
+  depends_on = [
+    var.linux-user,
+    random_string.linuxpass
+  ]
+  
+  vars = {
+    username    = var.linux-user
+    password    = random_string.linuxpass.result
+  }
+}
+
+resource "null_resource" "ansible-groupvars-linux-creation" {
+  triggers = {
+    template_rendered = "${data.template_file.ansible-groupvars-linux.rendered}"
+  }
+  
+  provisioner "local-exec" {
+    command = "echo '${data.template_file.ansible-groupvars-linux.rendered}' > ../Ansible/group_vars/linux.yml"
   }
 }
 
