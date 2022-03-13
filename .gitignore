@@ -1,5 +1,6 @@
 *.tfvars
 *.tfstate
 *.tfstate.backup
-.terraform/*
+Terraform/.terraform
+Terraform/.terraform/**
 Ansible/group_vars/all.yml

@@ -28,6 +28,11 @@ output "debian-user" {
     description = "The SSH username used to connect to the Debian machine."
 }
 
+output  "windows-domain" {
+    value = var.domain-dns-name
+    description = "The the Active Directory domain name."
+}
+
 output "windows-user" {
     value = var.windows-user
     description = "The username used to connect to the Windows machine."
@@ -36,4 +41,24 @@ output "windows-user" {
 output "windows-password" {
     value = random_string.adminpass.result
     description = "The password used for Windows local admin accounts."
+}
+
+output "debian-hostname" {
+    value = var.debian-hostname
+    description = "The hostname of the Debian VM."
+}
+
+output "dc-hostname" {
+    value = var.dc-hostname
+    description = "The hostname of the Domain Controller."
+}
+
+output "winserv2019-hostname" {
+    value = var.winserv2019-hostname
+    description = "The hostname of the Windows Server 2019 VM."
+}
+
+output "win10-hostname"{
+    value = var.win10-hostname
+    description = "The hostname of the Windows 10 VM."
 }
