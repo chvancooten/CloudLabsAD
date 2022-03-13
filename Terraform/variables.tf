@@ -26,10 +26,16 @@ variable "domain-dns-name" {
   default     = "cloud.labs"
 }
 
-variable "debian-hostname" {
+variable "hackbox-hostname" {
   type = string
-  description = "The hostname of the Debian VM."
+  description = "The hostname of the attacker VM."
   default = "hackbox"
+}
+
+variable "elastic-hostname" {
+  type = string
+  description = "The hostname of the Elastic VM."
+  default = "elastic"
 }
 
 variable "dc-hostname" {
@@ -56,13 +62,8 @@ variable "windows-user" {
   default     = "labadmin"
 }  
 
-variable "debian-user" {
+variable "linux-user" {
   type        = string
-  description = "The username used to access the Debian machine via SSH."
-  default     = "hacker"
-}
-
-variable "public-key" {
-  type        = string
-  description = "The public key used to access the Debian machine via SSH."
+  description = "The username used to access Linux machines via SSH."
+  default     = "labadmin"
 }

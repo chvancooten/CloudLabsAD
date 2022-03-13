@@ -5,12 +5,12 @@ data "template_file" "ansible-group-vars" {
   depends_on = [
     var.windows-user,
     var.domain-dns-name,
-    random_string.adminpass
+    random_string.windowspass
   ]
   
   vars = {
     username    = var.windows-user
-    password    = random_string.adminpass.result
+    password    = random_string.windowspass.result
     domain_name = var.domain-dns-name
   }
 }
@@ -26,7 +26,7 @@ resource "null_resource" "ansible-group-vars-creation" {
 }
 
 
-# Provision the lab using Ansible from the Debian machine
+# Provision the lab using Ansible from the hackbox machine
 resource "null_resource" "ansible-provisioning" {
 
   # All VMs have to be up before provisioning can be initiated, and we always trigger
@@ -35,17 +35,18 @@ resource "null_resource" "ansible-provisioning" {
     dc_id = azurerm_windows_virtual_machine.cloudlabs-vm-dc.id
     winserv2019_id = azurerm_windows_virtual_machine.cloudlabs-vm-winserv2019.id
     windows10_id = azurerm_windows_virtual_machine.cloudlabs-vm-windows10.id
-    debian_id = azurerm_linux_virtual_machine.cloudlabs-vm-debian.id
+    hackbox_id = azurerm_linux_virtual_machine.cloudlabs-vm-hackbox.id
+    elastic_id = azurerm_linux_virtual_machine.cloudlabs-vm-elastic.id
   }
 
   connection {
     type  = "ssh"
     host  = azurerm_public_ip.cloudlabs-ip.ip_address
-    user  = var.debian-user
-    agent = true
+    user  = var.linux-user
+    password = random_string.linuxpass.result
   }
 
-  # Copy Ansible folder to debian machine for provisioning
+  # Copy Ansible folder to hackbox machine for provisioning
   provisioner "file" {
     source      = "../Ansible"
     destination = "/dev/shm"

@@ -23,9 +23,14 @@ output "ip-whitelist" {
     description = "The IP address(es) that are allowed to connect to the various lab interfaces."
 }
 
-output "debian-user" {
-    value = var.debian-user
-    description = "The SSH username used to connect to the Debian machine."
+output "linux-user" {
+    value = var.linux-user
+    description = "The SSH username used to connect to Linux machines."
+}
+
+output "linux-password" {
+    value = random_string.linuxpass.result
+    description = "The password used for Linux admin accounts."
 }
 
 output  "windows-domain" {
@@ -39,13 +44,18 @@ output "windows-user" {
 }
 
 output "windows-password" {
-    value = random_string.adminpass.result
+    value = random_string.windowspass.result
     description = "The password used for Windows local admin accounts."
 }
 
-output "debian-hostname" {
-    value = var.debian-hostname
-    description = "The hostname of the Debian VM."
+output "hackbox-hostname" {
+    value = var.hackbox-hostname
+    description = "The hostname of the attacker VM."
+}
+
+output "elastic-hostname" {
+    value = var.elastic-hostname
+    description = "The hostname of the Elastic VM."
 }
 
 output "dc-hostname" {
