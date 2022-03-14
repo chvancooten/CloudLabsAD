@@ -1,13 +1,20 @@
 ---
-# Run common tasks on all machines in parallel
+# Configure the DC to prepare the domain
+# This takes some time, so install Elastic in parallel
+- hosts: all
+  strategy: free
+  tasks:
+    - include_role:
+        name: domain
+      when: "'dc' in group_names"
+    - include_role:
+        name: elastic
+      when: "'elastic' in group_names"
+
+# Run common tasks on all Windows machines in parallel
 - hosts: windows
   roles:
     - common
-
-# Configure the DC to prepare the domain
-- hosts: dc
-  roles:
-    - domain
 
 # Domain-join clients and run post-domain configuration in parallel
 - hosts: windows

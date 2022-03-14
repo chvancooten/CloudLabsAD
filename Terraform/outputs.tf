@@ -23,6 +23,21 @@ output "ip-whitelist" {
     description = "The IP address(es) that are allowed to connect to the various lab interfaces."
 }
 
+output "elastic-url" {
+    value = "http://10.13.37.50:5601"
+    description = "The URL used to connect to Elastic from the internal network."
+}
+
+output "elastic-user" {
+    value = "elastic"
+    description = "The username to connect to Elastic."
+}
+
+output "elastic-password" {
+    value = random_string.linuxpass.result
+    description = "The password to connect to Elastic."
+}
+
 output "linux-user" {
     value = var.linux-user
     description = "The SSH username used to connect to Linux machines."

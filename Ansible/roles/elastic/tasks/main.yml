@@ -1,0 +1,71 @@
+---
+
+# Elasticsearch playbook based on GOAD:
+# https://github.com/Orange-Cyberdefense/GOAD/blob/main/ansible/roles/elk/tasks/main.yml
+
+- name: Install required dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Add Elasticsearch apt-key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Elasticsearch repository
+  apt_repository:
+    repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
+    state: present
+    update_cache: true
+
+- name: Install Elasticsearch dependencies
+  apt:
+    pkg:
+      - logstash
+      - openjdk-11-jre
+      - kibana
+      - elasticsearch
+    state: latest
+    update_cache: true
+
+- name: Copy kibana configuration
+  copy:
+    src: kibana.yml
+    dest: /etc/kibana/kibana.yml
+    owner: "root"
+    group: "kibana"
+    mode: 0660
+
+- name: Copy Elasticsearch configuration
+  copy:
+    src: elasticsearch.yml
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: "root"
+    group: "elasticsearch"
+    mode: 0660
+
+- name: Change Elasticsearch start timeout to 3 min
+  lineinfile:
+    destfile: /usr/lib/systemd/system/elasticsearch.service
+    regexp: 'TimeoutStartSec='
+    line: 'TimeoutStartSec=180'
+
+- name: Set ELK password
+  expect:
+    command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic -ib
+    responses:
+      (?i)Enter: "{{ ansible_password }}"
+      (?i)Re-enter: "{{ ansible_password }}"
+
+- name: Enable and start ELK services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - elasticsearch
+    - logstash
+    - kibana

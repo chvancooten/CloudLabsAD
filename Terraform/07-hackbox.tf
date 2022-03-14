@@ -43,4 +43,8 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-hackbox" {
     sku       = "11-gen2"
     version   = "latest"
   }
+
+  tags {
+    DoNotAutoShutDown = "yes"
+  }
 }

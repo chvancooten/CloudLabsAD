@@ -1,5 +1,7 @@
 ---
 
+# TODO: Install Elastic agent
+
 - name: Copy desktop wallpaper
   win_copy:
     src: files/DesktopWallpaper.jpg
