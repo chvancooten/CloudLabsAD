@@ -21,7 +21,7 @@ resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-hackbox-
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "cloudlabs-vm-hackbox" {
   name                = "CloudLabs-vm-hackbox"
-  computer_name       = var.hackbox-attacker-hostname
+  computer_name       = var.hackbox-hostname
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   size                = "Standard_B2s"
