@@ -44,7 +44,7 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-hackbox" {
     version   = "latest"
   }
 
-  tags {
+  tags = {
     DoNotAutoShutDown = "yes"
   }
 }

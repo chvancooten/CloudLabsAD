@@ -58,7 +58,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
     content = "${file("${path.module}/files/FirstLogonCommands.xml")}"
   }
 
-  tags {
+  tags = {
     DoNotAutoShutDown = "yes"
   }
 }

@@ -52,7 +52,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
     content = "${file("${path.module}/files/FirstLogonCommands.xml")}"
   }
 
-  tags {
+  tags = {
     DoNotAutoShutDown = "yes"
   }
 }
