@@ -10,13 +10,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-elastic-nic" {
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.13.37.50"
   }
-}
 
-resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-elastic-nic-nat" {
-  network_interface_id  = azurerm_network_interface.cloudlabs-vm-elastic-nic.id
-  ip_configuration_name = "CloudLabs-vm-elastic-nic-config"
-  nat_rule_id           = azurerm_lb_nat_rule.cloudlabs-lb-nat-ssh.id
-}
 
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "cloudlabs-vm-elastic" {
