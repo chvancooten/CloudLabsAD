@@ -53,6 +53,10 @@
     regexp: 'TimeoutStartSec='
     line: 'TimeoutStartSec=180'
 
+- name: Install 'pexpect' module to use Ansible's 'expect'
+  pip:
+    name: pexpect
+
 - name: Set ELK password
   expect:
     command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic -ib
