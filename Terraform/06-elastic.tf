@@ -10,7 +10,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-elastic-nic" {
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.13.37.50"
   }
-
+}
 
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "cloudlabs-vm-elastic" {
