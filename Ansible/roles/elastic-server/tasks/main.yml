@@ -1,0 +1,116 @@
+- name: Add required dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Add Elasticsearch apt key.
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Elasticsearch repository
+  apt_repository:
+    repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
+    state: present
+    update_cache: true
+
+- name: Install Elasticsearch dependencies
+  apt:
+    pkg:
+      - logstash
+      - openjdk-11-jre
+      - elasticsearch
+      - kibana
+      - jq
+    state: latest
+    update_cache: true
+
+- name: Elasticsearch change start timeout to 3 minutes
+  lineinfile:
+    destfile: /usr/lib/systemd/system/elasticsearch.service
+    regexp: 'TimeoutStartSec='
+    line: 'TimeoutStartSec=180'
+
+- name: Update listening host for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.host: "localhost"'
+    line: 'server.host: 0.0.0.0'
+
+- name: Update listening port for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.port: 5601'
+    line: 'server.port: 80'
+
+- name: Configure encryption key for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    line: "xpack.encryptedSavedObjects.encryptionKey: '{{lookup('community.general.random_string', length=32) | hash('sha256')}}'"
+
+- name: Configure publicBaseUrl for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.publicBaseUrl: ""'
+    line: 'server.publicBaseUrl: "http://{{ elastic_ip }}"'
+
+- name: Update Kibana capabilities to listen on port 80
+  shell: |
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana-plugin
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana-keystore
+    setcap cap_net_bind_service=+epi /usr/share/kibana/node/bin/node
+  args:
+    executable: /bin/bash
+
+- name: Increase elasticsearch JVM memory
+  blockinfile:
+    path: /etc/elasticsearch/jvm.options
+    block: |
+      -Xms1G
+      -Xmx1G
+
+- name: Enable and start ELK services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - elasticsearch
+    - logstash
+    - kibana
+
+- name: Update elastic password
+  ansible.builtin.script: set-password-elastic.sh {{ elastic_password }}
+
+- name: Enroll kibana
+  ansible.builtin.script: enroll-kibana.sh
+
+- name: Restart kibana
+  service:
+    name: kibana
+    state: restarted
+
+- name: Wait for the kibana service to be available
+  uri:
+    url: "http://127.0.0.1/api/fleet/agent_policies"
+    method: GET
+    user: elastic
+    password: "{{ elastic_password }}"
+    force_basic_auth: yes
+  no_log: true
+  register: _result
+  until: _result.status == 200
+  retries: 30 # retry X times
+  delay: 3 # pause for X sec b/w each call
+
+- name: Install fleet server
+  ansible.builtin.script: fleet-server.sh {{ elastic_password }} {{ elastic_ip }}
+
+- name: Add "endpoint security" and "prebuilt security detection rules" integrations
+  ansible.builtin.script: endpoint-security-integration.sh {{ elastic_password }}
+
+- name: Enable all rules
+  ansible.builtin.script: enable-all-rules.sh {{ elastic_password }}
