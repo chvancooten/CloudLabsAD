@@ -1,7 +1,7 @@
 *.tfvars
 *.tfstate
 *.tfstate.backup
-*.lockhcl
+*.lock.hcl
 Terraform/.terraform
 Terraform/.terraform/**
 Ansible/group_vars/*.yml
