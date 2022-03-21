@@ -56,7 +56,7 @@ data "template_file" "ansible-groupvars-elastic" {
 
   depends_on = [
     random_string.linuxpass,
-    azurerm_network_interface.cloudlabs-vm-elastic-nic.private_ip_address
+    azurerm_network_interface.cloudlabs-vm-elastic-nic
   ]
   
   vars = {
