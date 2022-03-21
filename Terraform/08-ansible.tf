@@ -105,7 +105,7 @@ resource "null_resource" "ansible-provisioning" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt -qq update >/dev/null && sudo apt -qq install -y git ansible sshpass >/dev/null",
-      "ansible-galaxy collection install ansible.windows >/dev/null",
+      "ansible-galaxy collection install ansible.windows community.general >/dev/null",
       "cd /dev/shm/Ansible",
       "ansible-playbook -v cloudlabs.yml"
     ]
