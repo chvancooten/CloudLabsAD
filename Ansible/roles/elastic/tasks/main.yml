@@ -1,75 +1,158 @@
----
-
-# Elasticsearch playbook based on GOAD:
-# https://github.com/Orange-Cyberdefense/GOAD/blob/main/ansible/roles/elk/tasks/main.yml
-
-- name: Install required dependencies
+- name: Add required dependencies.
   apt:
     name:
       - apt-transport-https
       - gnupg2
     state: present
 
-- name: Add Elasticsearch apt-key
+- name: Add Elasticsearch apt key.
   apt_key:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     state: present
 
-- name: Add Elasticsearch repository
+- name: Add Elasticsearch repository.
   apt_repository:
     repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
     state: present
     update_cache: true
 
-- name: Install Elasticsearch dependencies
+- name: Install logstash
   apt:
-    pkg:
-      - logstash
-      - openjdk-11-jre
-      - kibana
-      - elasticsearch
-    state: latest
-    update_cache: true
+    name: logstash
+    state: present
 
-- name: Copy kibana configuration
-  copy:
-    src: kibana.yml
-    dest: /etc/kibana/kibana.yml
-    owner: "root"
-    group: "kibana"
-    mode: 0660
+- name: Install java
+  apt:
+    name: openjdk-11-jre
+    state: present
 
-- name: Copy Elasticsearch configuration
-  copy:
-    src: elasticsearch.yml
-    dest: /etc/elasticsearch/elasticsearch.yml
-    owner: "root"
-    group: "elasticsearch"
-    mode: 0660
+- name: Install elasticsearch
+  apt:
+    name: elasticsearch
+    state: present
 
-- name: Change Elasticsearch start timeout to 3 min
+- name: Install kibana
+  apt:
+    name: kibana
+    state: present
+
+- name: Install jq
+  apt:
+    name: jq
+    state: present
+
+- name: elasticsearch change start timeout to 3min
   lineinfile:
     destfile: /usr/lib/systemd/system/elasticsearch.service
     regexp: 'TimeoutStartSec='
     line: 'TimeoutStartSec=180'
 
-- name: Install 'pexpect' module to use Ansible's 'expect'
-  pip:
-    name: pexpect
+#- name: copy elasticsearch config
+#  copy:
+#    src: elasticsearch.yml
+#    dest: /etc/elasticsearch/elasticsearch.yml
+#    owner: "root"
+#    group: "elasticsearch"
+#    mode: 0660
 
-- name: Set ELK password
-  expect:
-    command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic -ib
-    responses:
-      (?i)Enter: "{{ ansible_password }}"
-      (?i)Re-enter: "{{ ansible_password }}"
+- name: update listening host for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.host: "localhost"'
+    line: 'server.host: 0.0.0.0'
 
-- name: Enable and start ELK services
+- name: update listening port for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.port: 5601'
+    line: 'server.port: 80'
+
+- name: configuration encryption key for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    line: "xpack.encryptedSavedObjects.encryptionKey: '{{lookup('community.general.random_string', length=32) | hash('sha256')}}'"
+
+- name: configure publicBaseUrl for kibana
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    search_string: '#server.publicBaseUrl: ""'
+    line: 'server.publicBaseUrl: "http://{{ ansible_eth0.ipv4.address }}"'
+
+- name: update capabilities to listen on port 80
+  shell: |
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana-plugin
+    setcap cap_net_bind_service=+epi /usr/share/kibana/bin/kibana-keystore
+    setcap cap_net_bind_service=+epi /usr/share/kibana/node/bin/node
+  args:
+    executable: /bin/bash
+
+- name: increase elasticsearch memory
+  blockinfile:
+    path: /etc/elasticsearch/jvm.options
+    block: |
+      -Xms1G
+      -Xmx1G
+
+- name: enable logstash
   service:
-    name: "{{ item }}"
+    name: logstash
+    enabled: yes
+
+- name: enable elasticsearch
+  service:
+    name: elasticsearch
+    enabled: yes
+
+- name: enable kibana
+  service:
+    name: kibana
+    enabled: yes
+
+- name: start logstash
+  service:
+    name: logstash
     state: started
-    enabled: true
-  loop:
-    - elasticsearch
-    - logstash
-    - kibana
+
+- name: start elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+
+- name: start kibana
+  service:
+    name: kibana
+    state: started
+
+- name: update elastic password
+  ansible.builtin.script: set-password-elastic.sh {{ elastic_password }}
+
+- name: enroll kibana
+  ansible.builtin.script: enroll-kibana.sh
+
+- name: restart kibana
+  service:
+    name: kibana
+    state: restarted
+
+- name: Wait for the kibana service to be available
+  uri:
+    url: "http://127.0.0.1/api/fleet/agent_policies"
+    method: GET
+    user: elastic
+    password: "{{ elastic_password }}"
+    force_basic_auth: yes
+  no_log: yes
+  register: _result
+  until: _result.status == 200
+  retries: 30 # retry X times
+  delay: 3 # pause for X sec b/w each call
+
+- name: install fleet server
+  ansible.builtin.script: fleet-server.sh {{ elastic_password }} {{ ansible_eth0.ipv4.address }}
+
+- name: add "endpoint security" and "prebuilt security detection rules" integrations
+  ansible.builtin.script: endpoint-security-integration.sh {{ elastic_password }}
+
+- name: enable all rules
+  ansible.builtin.script: enable-all-rules.sh {{ elastic_password }}
