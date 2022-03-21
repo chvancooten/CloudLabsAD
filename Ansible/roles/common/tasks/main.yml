@@ -1,7 +1,5 @@
 ---
 
-# TODO: Install Elastic agent
-
 - name: Copy desktop wallpaper
   win_copy:
     src: files/DesktopWallpaper.jpg
@@ -20,6 +18,10 @@
     - bginfo
     state: present
     ignore_checksums: true
+
+- name: Install elastic agent
+  include_role:
+    name: elastic-agent
 
 - name: Configure bginfo as autorun
   win_regedit:

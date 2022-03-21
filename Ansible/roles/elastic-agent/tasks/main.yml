@@ -1,2 +1,2 @@
-- name: deploy endpoint security agent
-  ansible.builtin.script: deploy-agent.ps1 -Password {{ elastic_password }} -ServerIP {{ groups.elk.0 }}
+- name: Deploy endpoint security agent
+  ansible.builtin.script: deploy-agent.ps1 -Password {{ elastic_password }} -ServerIP {{ elastic_ip }}

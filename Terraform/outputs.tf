@@ -24,7 +24,7 @@ output "ip-whitelist" {
 }
 
 output "elastic-url" {
-    value = "http://10.13.37.50:5601"
+    value = "http://10.13.37.50"
     description = "The URL used to connect to Elastic from the internal network."
 }
 

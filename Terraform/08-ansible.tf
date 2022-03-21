@@ -1,4 +1,4 @@
-# Prepare the group variable template with the right username and password
+# Prepare the Windows group variable template with the right username and password
 data "template_file" "ansible-groupvars-windows" {
   template = "${file("../Ansible/group_vars/windows.tmpl")}"
 
@@ -25,7 +25,7 @@ resource "null_resource" "ansible-groupvars-windows-creation" {
   }
 }
 
-# Prepare the group variable template with the right username and password
+# Prepare the Linux group variable template with the right username and password
 data "template_file" "ansible-groupvars-linux" {
   template = "${file("../Ansible/group_vars/linux.tmpl")}"
 
@@ -50,6 +50,30 @@ resource "null_resource" "ansible-groupvars-linux-creation" {
   }
 }
 
+# Prepare the Elastic group variable template with the right username and password
+data "template_file" "ansible-groupvars-elastic" {
+  template = "${file("../Ansible/group_vars/elastic.tmpl")}"
+
+  depends_on = [
+    random_string.linuxpass,
+    azurerm_network_interface.cloudlabs-vm-elastic-nic.private_ip_address
+  ]
+  
+  vars = {
+    password = random_string.linuxpass.result
+    ip       = azurerm_network_interface.cloudlabs-vm-elastic-nic.private_ip_address
+  }
+}
+
+resource "null_resource" "ansible-groupvars-elastic-creation" {
+  triggers = {
+    template_rendered = "${data.template_file.ansible-groupvars-elastic.rendered}"
+  }
+  
+  provisioner "local-exec" {
+    command = "echo '${data.template_file.ansible-groupvars-elastic.rendered}' > ../Ansible/group_vars/elastic.yml"
+  }
+}
 
 # Provision the lab using Ansible from the hackbox machine
 resource "null_resource" "ansible-provisioning" {
