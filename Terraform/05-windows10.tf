@@ -29,7 +29,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
   location            = data.azurerm_resource_group.cloudlabs-rg.location
   timezone            = var.timezone
   admin_username      = var.windows-user
-  admin_password      = random_string.adminpass.result
+  admin_password      = random_string.windowspass.result
   custom_data         = local.custom_data_content
   network_interface_ids = [
     azurerm_network_interface.cloudlabs-vm-windows10-nic.id,
@@ -38,7 +38,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
   os_disk {
     name                 = "CloudLabs-vm-windows10-osdisk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -50,11 +50,15 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-windows10" {
 
   additional_unattend_content {
     setting = "AutoLogon"
-    content = "<AutoLogon><Password><Value>${random_string.adminpass.result}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.windows-user}</Username></AutoLogon>"
+    content = "<AutoLogon><Password><Value>${random_string.windowspass.result}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.windows-user}</Username></AutoLogon>"
   }
 
   additional_unattend_content {
     setting = "FirstLogonCommands"
     content = "${file("${path.module}/files/FirstLogonCommands.xml")}"
+  }
+
+  tags = {
+    DoNotAutoShutDown = "yes"
   }
 }

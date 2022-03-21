@@ -1,12 +1,23 @@
 ---
-dc:
-  hosts:
-    10.13.37.10:
+windows:
+  children:
+    dc:
+      hosts:
+        10.13.37.10:
+    winserv2019:
+      hosts:
+        10.13.37.100:
+    win10:
+      hosts:
+        10.13.37.150:
 
-winserv2019:
-  hosts:
-    10.13.37.100:
+linux:
+  children:
+    elastic_server:
+      hosts:
+        10.13.37.50:
 
-win10:
-  hosts:
-    10.13.37.150:
+elastic:
+  children:
+    windows:
+    linux:

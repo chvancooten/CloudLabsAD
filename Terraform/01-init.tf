@@ -21,11 +21,17 @@ locals {
 }
 
 # Generate random password for windows local admins
-resource "random_string" "adminpass" {
+resource "random_string" "windowspass" {
   length           = 16
-  special          = true
-  override_special = "_%@"
+  special          = false
 }
+
+# Generate random password for windows local admins
+resource "random_string" "linuxpass" {
+  length           = 16
+  special          = false
+}
+
 
 # Get a reference to the existing resource group
 data "azurerm_resource_group" "cloudlabs-rg" {

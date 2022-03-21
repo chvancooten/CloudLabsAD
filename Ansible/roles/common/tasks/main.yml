@@ -10,14 +10,18 @@
     src: files/bginfo.bgi
     dest: C:\Users\Public\bginfo.bgi
 
+# Note: Chocolatey packages should be minimized to avoid hitting the rate limit (only 1 outbound IP is used)
 - name: Install utilities 
   win_chocolatey:
     name:
-    - NotepadPlusPlus
     - GoogleChrome
     - bginfo
     state: present
     ignore_checksums: true
+
+- name: Install elastic agent
+  include_role:
+    name: elastic-agent
 
 - name: Configure bginfo as autorun
   win_regedit:
@@ -25,15 +29,14 @@
     name: bginfo
     data: 'C:\ProgramData\chocolatey\bin\bginfo.exe c:\users\public\bginfo.bgi /silent /timer:0 /nolicprompt'
 
-# Clean up Windows stuff from the taskbar
-- name: Ensure 'Search' unpinned from Taskbar.
+- name: Ensure 'Search' unpinned from the taskbar
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
     name: SearchboxTaskbarMode
     data: 0
     type: dword
 
-- name: Ensure 'News and Interests' unpinned from Taskbar.
+- name: Ensure 'News and Interests' unpinned from the taskbar
   ansible.windows.win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds
     name: EnableFeeds
@@ -41,14 +44,14 @@
     type: dword
     state: present
 
-- name: Ensure 'People' unpinned from Taskbar.
+- name: Ensure 'People' unpinned from the taskbar
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People
     name: PeopleBand
     data: 0
     type: dword
 
-- name: Ensure 'Edge', 'Store' other built-in shortcuts unpinned from Taskbar.
+- name: Ensure 'Edge', 'Store' other built-in shortcuts unpinned from the taskbar
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband
     name: Favorites

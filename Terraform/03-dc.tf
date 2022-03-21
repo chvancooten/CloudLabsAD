@@ -5,7 +5,7 @@ resource "azurerm_network_interface" "cloudlabs-vm-dc-nic" {
   resource_group_name  = data.azurerm_resource_group.cloudlabs-rg.name
 
   ip_configuration {
-    name                          = "CloudLabs-vm-debian-dc-config"
+    name                          = "CloudLabs-vm-dc-config"
     subnet_id                     = azurerm_subnet.cloudlabs-subnet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.13.37.10"
@@ -23,7 +23,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
   location                 = data.azurerm_resource_group.cloudlabs-rg.location
   timezone                 = var.timezone
   admin_username           = var.windows-user
-  admin_password           = random_string.adminpass.result
+  admin_password           = random_string.windowspass.result
   custom_data              = local.custom_data_content
   network_interface_ids    = [
     azurerm_network_interface.cloudlabs-vm-dc-nic.id,
@@ -32,7 +32,7 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
   os_disk {
     name                 = "CloudLabs-vm-dc-osdisk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -44,11 +44,15 @@ resource "azurerm_windows_virtual_machine" "cloudlabs-vm-dc" {
 
   additional_unattend_content {
     setting = "AutoLogon"
-    content = "<AutoLogon><Password><Value>${random_string.adminpass.result}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.windows-user}</Username></AutoLogon>"
+    content = "<AutoLogon><Password><Value>${random_string.windowspass.result}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.windows-user}</Username></AutoLogon>"
   }
 
   additional_unattend_content {
     setting = "FirstLogonCommands"
     content = "${file("${path.module}/files/FirstLogonCommands.xml")}"
+  }
+
+  tags = {
+    DoNotAutoShutDown = "yes"
   }
 }
