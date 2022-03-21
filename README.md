@@ -34,7 +34,8 @@ The labs consist of a selection of machines:
 - Windows Server 2019
     - Internet Information Servicies (IIS) web server with simple vulnerable app
 - Windows 10 client
-- Debian box with Elastic EDR
+- Debian box with Elastic Endpoint Security
+    - Elastic Agent is deployed to all Windows machines via Fleet
 - Debian attacker box
 
 One public IP is exposed for the whole lab. The IP ranges defined in the `ip-whitelist` are allowed to access the following ports on this IP address, which are bound to the following services using a load balancer:
