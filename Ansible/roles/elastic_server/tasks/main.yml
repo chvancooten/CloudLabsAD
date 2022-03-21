@@ -33,27 +33,27 @@
     regexp: 'TimeoutStartSec='
     line: 'TimeoutStartSec=180'
 
-- name: Update listening host for kibana
+- name: Update listening host for Kibana
   lineinfile:
     path: /etc/kibana/kibana.yml
-    search_string: '#server.host: "localhost"'
+    regexp: '#server\.host: "localhost"'
     line: 'server.host: 0.0.0.0'
 
-- name: Update listening port for kibana
+- name: Update listening port for Kibana
   lineinfile:
     path: /etc/kibana/kibana.yml
-    search_string: '#server.port: 5601'
+    regexp: '#server\.port: 5601'
     line: 'server.port: 80'
 
-- name: Configure encryption key for kibana
+- name: Configure encryption key for Kibana
   lineinfile:
     path: /etc/kibana/kibana.yml
     line: "xpack.encryptedSavedObjects.encryptionKey: '{{lookup('community.general.random_string', length=32) | hash('sha256')}}'"
 
-- name: Configure publicBaseUrl for kibana
+- name: Configure public base URL for Kibana
   lineinfile:
     path: /etc/kibana/kibana.yml
-    search_string: '#server.publicBaseUrl: ""'
+    regexp: '#server\.publicBaseUrl: ""'
     line: 'server.publicBaseUrl: "http://{{ elastic_ip }}"'
 
 - name: Update Kibana capabilities to listen on port 80
@@ -65,7 +65,7 @@
   args:
     executable: /bin/bash
 
-- name: Increase elasticsearch JVM memory
+- name: Increase Elasticsearch JVM memory
   blockinfile:
     path: /etc/elasticsearch/jvm.options
     block: |
@@ -82,18 +82,18 @@
     - logstash
     - kibana
 
-- name: Update elastic password
+- name: Update Elastic password
   ansible.builtin.script: set-password-elastic.sh {{ elastic_password }}
 
-- name: Enroll kibana
+- name: Enroll Kibana
   ansible.builtin.script: enroll-kibana.sh
 
-- name: Restart kibana
+- name: Restart Kibana
   service:
     name: kibana
     state: restarted
 
-- name: Wait for the kibana service to be available
+- name: Wait for the Kibana service to be available
   uri:
     url: "http://127.0.0.1/api/fleet/agent_policies"
     method: GET
@@ -106,11 +106,11 @@
   retries: 30 # retry X times
   delay: 3 # pause for X sec b/w each call
 
-- name: Install fleet server
+- name: Install Fleet server
   ansible.builtin.script: fleet-server.sh {{ elastic_password }} {{ elastic_ip }}
 
 - name: Add "endpoint security" and "prebuilt security detection rules" integrations
   ansible.builtin.script: endpoint-security-integration.sh {{ elastic_password }}
 
-- name: Enable all rules
+- name: Enable all Elastic security rules
   ansible.builtin.script: enable-all-rules.sh {{ elastic_password }}

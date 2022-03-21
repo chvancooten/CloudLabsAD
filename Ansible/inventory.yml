@@ -13,11 +13,11 @@ windows:
 
 linux:
   children:
-    elastic-server:
+    elastic_server:
       hosts:
         10.13.37.50:
 
 elastic:
   children:
     windows:
-    elastic-server:
+    linux:

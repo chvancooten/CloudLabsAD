@@ -8,8 +8,8 @@
         name: domain
       when: "'dc' in group_names"
     - include_role:
-        name: elastic-server
-      when: "'elastic-server' in group_names"
+        name: elastic_server
+      when: "'elastic_server' in group_names"
 
 # Run common tasks on all Windows machines in parallel
 - hosts: windows
