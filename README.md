@@ -1,5 +1,7 @@
 # Cloud Labs AD
 
+_By @chvancooten, Ansible role for Elastic Security deployment by @nodauf_
+
 Provisioning scripts for an Active Directory lab environment. Designed to be deployed to Azure using the Azure cloud shell. Very alpha.
 
 ## Setup
