@@ -2,11 +2,13 @@
 
 _By [@chvancooten](https://twitter.com/chvancooten), Ansible role for Elastic Security deployment by [@nodauf](https://twitter.com/nodauf)_
 
-Provisioning scripts for an Active Directory lab environment. Designed to be deployed to Azure using the Azure cloud shell. Very alpha.
+Provisioning scripts for an Active Directory lab environment. Designed to be deployed to Azure using the Azure cloud shell.
 
 ## Setup
 
 The lab is provisioned automatically using Terraform and Ansible. First, Terraform deploys all the infrastructure and prepares the machines for provisioning. It then kicks off a role-based Ansible playbook from the Debian attacker machine to provision the Windows-based machines.
+
+**In the default setup, the lab takes approximately 15-20 minutes to provision, and costs about €1 per day to run on Azure.**
 
 ### Deployment
 
