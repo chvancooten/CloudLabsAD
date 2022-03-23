@@ -12,10 +12,10 @@ The lab is provisioned automatically using Terraform and Ansible. First, Terrafo
 
 ### Deployment
 
-- Clone the repo to your Azure cloud shell. It conveniently has all you need (Ansible, Terraform, authenticated Azure command line)
-- Copy `terraform.tfvars.example` to `terraform.tfvars` in the `Terraform` directory, and configure the variables appropriately
-- In the same directory, run `terraform init`
-- When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip the approval check)
+- Clone the repo to your Azure cloud shell. It conveniently has all you need (Terraform and an authenticated Azure provider). Alternatively, install and configure Terraform and the Azure provider yourself. Ansible is installed automatically as part of the provisioning process.
+- Copy `terraform.tfvars.example` to `terraform.tfvars` in the `Terraform` directory, and configure the variables appropriately.
+- In the same directory, run `terraform init`.
+- When you're ready to deploy, run `terraform apply` (or `terraform apply --auto-approve` to skip the approval check).
 
 Once deployment and provisioning have finished, the output variables (public IP / DNS name, administrative passwords, machine names, etc.) will be displayed. You are now ready to connect to the labs!
 
@@ -25,7 +25,7 @@ Once deployment and provisioning have finished, the output variables (public IP 
 
 ### Removal
 
-- When you're done with the labs, run `terraform destroy` to tear down the environment
+- When you're done with the labs, run `terraform destroy` to tear down the environment.
 
 ## Labs
 
@@ -36,7 +36,7 @@ The labs consist of a selection of machines:
 - Windows Server 2016 DC
     - Active Directory Certificate Services (ADCS) installed
 - Windows Server 2019
-    - Internet Information Servicies (IIS) web server with simple vulnerable app
+    - Internet Information Services (IIS) web server with simple vulnerable app
 - Windows 10 client
 - Debian box with Elastic Endpoint Security
     - Elastic Agent is deployed to all Windows machines via Fleet
