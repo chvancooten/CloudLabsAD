@@ -32,10 +32,22 @@ variable "hackbox-hostname" {
   default = "hackbox"
 }
 
+variable "hackbox-size" {
+  type = string
+  description = "The machine size of the attacker VM."
+  default = "Standard_B4ms"
+}
+
 variable "elastic-hostname" {
   type = string
   description = "The hostname of the Elastic VM."
   default = "elastic"
+}
+
+variable "elastic-size" {
+  type = string
+  description = "The machine size of the Elastic VM."
+  default = "Standard_B4ms"
 }
 
 variable "dc-hostname" {
@@ -44,16 +56,34 @@ variable "dc-hostname" {
   default = "dc"
 }
 
+variable "dc-size" {
+  type = string
+  description = "The machine size of the Windows Server 2016 DC VM."
+  default = "Standard_B4ms"
+}
+
 variable "winserv2019-hostname" {
   type = string
   description = "The hostname of the Windows Server 2019 VM."
   default = "winserv2019"
 }
 
+variable "winserv2019-size" {
+  type = string
+  description = "The machine size of the Windows Server 2019 VM."
+  default = "Standard_B4ms"
+}
+
 variable "win10-hostname" {
   type = string
   description = "The hostname of the Windows 10 VM."
   default = "win10"
+}
+
+variable "win10-size" {
+  type = string
+  description = "The machine size of the Windows 10 VM."
+  default = "Standard_B4ms"
 }
 
 variable "windows-user" {

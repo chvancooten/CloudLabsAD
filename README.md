@@ -6,9 +6,9 @@ Provisioning scripts for an Active Directory lab environment. Designed to be dep
 
 ## Setup
 
-The lab is provisioned automatically using Terraform and Ansible. First, Terraform deploys all the infrastructure and prepares the machines for provisioning. It then kicks off a role-based Ansible playbook from the Debian attacker machine to provision the Windows-based machines.
+The lab is provisioned automatically using Terraform and Ansible. First, Terraform deploys all the infrastructure and prepares the machines for provisioning. It then kicks off a role-based Ansible playbook from the Debian attacker machine to provision the Windows-based machines. The full process takes about 15 to 20 minutes to complete.
 
-**In the default setup, the lab takes approximately 15-20 minutes to provision, and costs about €1 per day to run on Azure.**
+> 💸 **Note:** The machine sizes are moderately large by default ('Standard_B4ms'). In my testing the bill was approx. €10 per day of active use, your mileage may vary. Change the appropriate 'size' settings in `terraform.tfvars` to change machine sizes.
 
 ### Deployment
 

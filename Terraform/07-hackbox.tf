@@ -24,7 +24,7 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-hackbox" {
   computer_name       = var.hackbox-hostname
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
-  size                = "Standard_B2s"
+  size                = var.hackbox-size
   disable_password_authentication = false
   admin_username      = var.linux-user
   admin_password      = random_string.linuxpass.result

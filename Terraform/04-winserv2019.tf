@@ -22,7 +22,7 @@ resource "azurerm_network_interface_nat_rule_association" "cloudlabs-vm-winserv2
 resource "azurerm_windows_virtual_machine" "cloudlabs-vm-winserv2019" {
   name                = "CloudLabs-vm-winserv2019"
   computer_name       = var.winserv2019-hostname
-  size                = "Standard_B4ms"
+  size                = var.winserv2019-size
   provision_vm_agent  = true
   enable_automatic_updates = true
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name

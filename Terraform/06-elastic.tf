@@ -18,7 +18,7 @@ resource "azurerm_linux_virtual_machine" "cloudlabs-vm-elastic" {
   computer_name       = var.elastic-hostname
   resource_group_name = data.azurerm_resource_group.cloudlabs-rg.name
   location            = data.azurerm_resource_group.cloudlabs-rg.location
-  size                = "Standard_D4ds_v5"
+  size                = var.elastic-size
   disable_password_authentication = false
   admin_username      = var.linux-user
   admin_password      = random_string.linuxpass.result
