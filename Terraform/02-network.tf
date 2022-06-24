@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "cloudlabs-nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefixes    = "${concat(var.ip-whitelist, ["${chomp(data.http.public-ip.body)}/32"])}"
+    source_address_prefixes    = "${distinct(concat(var.ip-whitelist, [chomp(data.http.public-ip.body)]))}"
     destination_address_prefix = "*"
   }
 
